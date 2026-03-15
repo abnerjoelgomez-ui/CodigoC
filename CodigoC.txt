@@ -1,0 +1,74 @@
+
+#include <stdio.h>
+
+int main(void) {
+    // Tasas fijas de ejemplo (ajústalas)
+    // Base: 1 USD = 7.80 GTQ, 1 EUR = 8.50 GTQ (ejemplos)
+    const double USD_GTQ = 7.80;
+    const double EUR_GTQ = 8.50;
+
+    // Matriz de conversión directa entre monedas:
+    // idx: 1=GTQ, 2=USD, 3=EUR
+    double rate[4][4] = {0};
+    rate[1][1] = 1.0;                  // GTQ -> GTQ
+    rate[1][2] = 1.0 / USD_GTQ;        // GTQ -> USD
+    rate[1][3] = 1.0 / EUR_GTQ;        // GTQ -> EUR
+
+    rate[2][1] = USD_GTQ;              // USD -> GTQ
+    rate[2][2] = 1.0;                  // USD -> USD
+    rate[2][3] = USD_GTQ / EUR_GTQ;    // USD -> EUR
+
+    rate[3][1] = EUR_GTQ;              // EUR -> GTQ
+    rate[3][2] = EUR_GTQ / USD_GTQ;    // EUR -> USD
+    rate[3][3] = 1.0;                  // EUR -> EUR
+
+    int opcion, from, to;
+    double monto;
+
+    do {
+        printf("\n=== CONVERSOR DE MONEDAS ===\n");
+        printf("1) Convertir\n");
+        printf("2) Ver tasas usadas\n");
+        printf("0) Salir\n");
+        printf("Elige una opcion: ");
+        if (scanf("%d", &opcion) != 1) {
+            printf("Entrada invalida.\n");
+            return 0;
+        }
+
+        if (opcion == 1) {
+            printf("\nMoneda origen:\n 1) Quetzal (GTQ)\n 2) Dolar (USD)\n 3) Euro (EUR)\n> ");
+            if (scanf("%d", &from) != 1 || from < 1 || from > 3) {
+                printf("Opcion invalida.\n");
+                continue;
+            }
+
+            printf("Moneda destino:\n 1) Quetzal (GTQ)\n 2) Dolar (USD)\n 3) Euro (EUR)\n> ");
+            if (scanf("%d", &to) != 1 || to < 1 || to > 3) {
+                printf("Opcion invalida.\n");
+                continue;
+            }
+
+            printf("Monto a convertir: ");
+            if (scanf("%lf", &monto) != 1 || monto < 0) {
+                printf("Monto invalido.\n");
+                continue;
+            }
+
+            double resultado = monto * rate[from][to];
+            const char *nombres[] = {"", "GTQ", "USD", "EUR"};
+            printf("\n%.2f %s = %.2f %s\n", monto, nombres[from], resultado, nombres[to]);
+
+        } else if (opcion == 2) {
+            printf("\nTASAS USADAS (ejemplo):\n");
+            printf("1 USD = %.4f GTQ\n", USD_GTQ);
+            printf("1 EUR = %.4f GTQ\n", EUR_GTQ);
+            printf("1 USD = %.4f EUR\n", USD_GTQ / EUR_GTQ);
+            printf("1 EUR = %.4f USD\n", EUR_GTQ / USD_GTQ);
+        }
+
+    } while (opcion != 0);
+
+    printf("Hasta pronto!\n");
+    return 0;
+}
